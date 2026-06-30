@@ -17,11 +17,11 @@ const csp = [
 ].join("; ")
 
 const nextConfig: NextConfig = {
-  // output: "export",
-  // images: {
-  //   unoptimized: true,
-  // },
-  // trailingSlash: true,
+  output: "export",
+  images: {
+    unoptimized: true,
+  },
+  trailingSlash: true,
   
 
   reactStrictMode: true,
