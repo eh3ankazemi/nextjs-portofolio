@@ -41,21 +41,21 @@ export const siteMetadata: SiteMetadata = {
    * Author information
    */
   author: {
-    name: "Alexandru Moraru",
-    url: "https://alexradumoraru.com",
+    name: "Ehsan Kazemi",
+    url: process.env.NEXT_PUBLIC_SITE_URL,
   },
 
   /**
    * Base URL of your website (used for canonical URLs and Open Graph).
    * Set NEXT_PUBLIC_SITE_URL in your environment (e.g. .env.local) to override the default.
    */
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://nextjs-portofolio-website.vercel.app",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com",
 
   /**
    * Social media handles
    */
   social: {
-    twitter: "@alexradumoraru",
+    twitter: "@eh3ankazemi",
   },
 
   /**

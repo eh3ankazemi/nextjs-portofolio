@@ -32,26 +32,31 @@ point for your own personal website, or as a reference for doing the same thing 
 
 </details>
 
-![Screenshot Pages Desktop](public/homepage-screenshot-desktop.png)
-
-![Screenshot Pages Phone](public/pages-screenshots-mobile.png)
-
----
 
 ## 📋 Table of Contents
 
-- [💎 Key Features](#-key-features)
-- [🧱 Project Structure](#-project-structure)
-- [🚀 Getting Started](#-getting-started)
-- [🎨 Customization](#-customization)
-- [🔍 SEO](#-seo)
-- [🧭 Roadmap](#-roadmap)
-- [📚 Learn More](#-learn-more)
-- [▲ Deployment](#-deployment)
-- [🛠 Tech Stack](#-tech-stack)
-- [💎 Code Quality & Guidelines](#-code-quality--guidelines)
-- [🪪 License](#-license)
-- [💬 Feedback & Contributions](#-feedback--contributions)
+- [Next.js Developer-Themed Personal Website Template](#nextjs-developer-themed-personal-website-template)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [💎 Key Features](#-key-features)
+  - [🧱 Project Structure](#-project-structure)
+    - [✨ Minimal Configuration Required](#-minimal-configuration-required)
+  - [🚀 Getting Started](#-getting-started)
+  - [🎨 Customization](#-customization)
+    - [1. Update Site Metadata (`src/data/metadata.ts`)](#1-update-site-metadata-srcdatametadatats)
+    - [2. Update Personal Information (`src/data/content.ts`)](#2-update-personal-information-srcdatacontentts)
+    - [3. Add Your Content (`.mdx` files)](#3-add-your-content-mdx-files)
+    - [4. Update Visual Assets](#4-update-visual-assets)
+  - [🔍 SEO](#-seo)
+    - [Dynamic Open Graph images](#dynamic-open-graph-images)
+    - [Full SEO reference](#full-seo-reference)
+  - [🧭 Roadmap](#-roadmap)
+  - [📚 Learn More](#-learn-more)
+  - [▲ Deployment](#-deployment)
+  - [🛠 Tech Stack](#-tech-stack)
+  - [💎 Code Quality \& Guidelines](#-code-quality--guidelines)
+  - [⭐ Star History](#-star-history)
+  - [🪪 License](#-license)
+  - [💬 Feedback \& Contributions](#-feedback--contributions)
 
 ---
 
@@ -118,10 +123,10 @@ in the root directory of the project:
 npm run dev
 ```
 
-or via `pnpm` (recommended):
+or via `bum` (recommended):
 
 ```bash
-pnpm dev
+bum run dev
 ```
 
 Once the server is running, open [http://localhost:3000](http://localhost:3000) in your browser to view the
@@ -134,10 +139,10 @@ You can also build the project for production using:
 npm run build
 ```
 
-or via `pnpm`:
+or via `bum`:
 
 ```bash
-pnpm build
+bum run build
 ```
 
 And then start the production server with:
@@ -146,10 +151,10 @@ And then start the production server with:
 npm start
 ```
 
-or via `pnpm`:
+or via `bum`:
 
 ```bash
-pnpm start
+bum run start
 ```
 
 ---

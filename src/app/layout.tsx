@@ -1,6 +1,4 @@
 import "./globals.css"
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Gabarito } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 import React, { ReactNode } from "react"
@@ -71,8 +69,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Header />
           <main className="grow container mx-auto px-4 py-6">
             {children}
-            <Analytics />
-            <SpeedInsights />
           </main>
           <Footer />
         </ThemeProvider>
