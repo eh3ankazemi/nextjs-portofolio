@@ -18,7 +18,6 @@ const csp = [
 
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "http://ehsan-kazemi.ir/nextjs-portofolio/",
   images: {
     unoptimized: true,
   },
