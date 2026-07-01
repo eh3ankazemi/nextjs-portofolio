@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { homeIntroConfig } from "@/data/content"
+import { useTranslation } from "@/hooks/useTranslation"
 import { cn } from "@/lib/utils"
 
 /**
@@ -20,12 +21,13 @@ function getInitials(name: string): string {
  * The "breadcrumbs" component that displays the current path as a series of links.
  */
 export default function Breadcrumbs() {
+  const t = useTranslation()
   const pathname = usePathname()
 
   const segments = pathname.split("/").filter(Boolean)
 
   // Generate initials from the name
-  const initials = getInitials(homeIntroConfig.name)
+  const initials = getInitials(t.name)
 
   // Only show breadcrumbs for /blog, /projects, /work and their subpaths
   const allowedRoots = ["blog", "projects", "work"]
@@ -46,7 +48,7 @@ export default function Breadcrumbs() {
         {/* Initials on mobile */}
         <span className="block md:hidden text-lg">{initials}</span>
         {/* Full name on desktop */}
-        <span className="hidden md:inline text-lg">{homeIntroConfig.name}</span>
+        <span className="hidden md:inline text-lg">{t.name}</span>
       </Link>
 
       {/* Crumbs part: show only on mobile, not on desktop */}

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
-import NavigationMenu from "@/components/NavigationMenu"
+import NavigationMenu from "@/components/header/NavigationMenu"
 import { navItems } from "@/lib/constants"
 
 // Mock usePathname to return different values for different tests

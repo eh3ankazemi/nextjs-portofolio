@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
-import MobileMenuToggle from "@/components/MobileMenuToggle"
+import MobileMenuToggle from "@/components/header/MobileMenuToggle"
 
 describe("MobileMenuToggle", () => {
   it("renders the toggle button", () => {

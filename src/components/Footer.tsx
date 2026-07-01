@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { FaCodeBranch } from "react-icons/fa"
 import { footerConfig, socialIconMap } from "@/data/content"
-import { appVersion } from "@/lib/constants"
 import { cn } from "@/lib/utils"
+import packageJson from "../../package.json"
 
 /**
  * Internal component to render social media links
@@ -83,7 +83,7 @@ export default function Footer() {
           )}
         >
           <Link
-            href={`https://github.com/alemoraru/nextjs-portofolio-website/releases/tag/v${appVersion}`}
+            href={`https://github.com/eh3ankazemi/ehsan-kazemi.ir/releases/tag/v${packageJson.version}`}
             rel="noopener noreferrer"
             className={cn(
               "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md",
@@ -96,7 +96,7 @@ export default function Footer() {
             )}
           >
             <FaCodeBranch className="w-3 h-3 text-gray-500 dark:text-gray-500" />
-            <span className="font-semibold text-accent-600 dark:text-accent-400">{appVersion}</span>
+            <span className="font-semibold text-accent-600 dark:text-accent-400">{packageJson.version}</span>
           </Link>
 
           <span className="text-gray-500 dark:text-gray-500">

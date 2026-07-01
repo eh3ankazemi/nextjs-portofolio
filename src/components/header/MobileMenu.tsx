@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useRef, useEffect } from "react"
-import { navItems } from "@/lib/constants"
+import { useTranslation } from "@/hooks/useTranslation"
 import { cn } from "@/lib/utils"
 
 /**
@@ -17,7 +17,17 @@ export default function MobileMenu({
   isOpen: boolean
   setIsOpenAction: (v: boolean) => void
 }) {
+  const t = useTranslation()
   const pathname = usePathname()
+
+  
+    // Only show breadcrumbs for /blog, /projects, /work and their subpaths
+    const navItems = [
+  { name:       t.navigation.home, path: "/" },
+  { name: t.navigation.work, path: "/work" },
+  { name: t.navigation.projects, path: "/projects" },
+  { name: t.navigation.blog, path: "/blog" },
+]
   const menuRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {

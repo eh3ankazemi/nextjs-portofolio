@@ -1,0 +1,14 @@
+{
+  "lang":"en",
+  "name":"Ehsan kazemi",
+   "short_name":"Ehsan",
+  "navigation": {
+    "home": "Home",
+    "blog": "Blog",
+    "projects": "Projects",
+    "work": "Work"
+  },
+  "home": {
+    "title": "Hi, I'm Ehsan"
+  }
+}

@@ -2,13 +2,15 @@
 
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import Breadcrumbs from "@/components/Breadcrumbs"
-import MobileMenu from "@/components/MobileMenu"
-import MobileMenuToggle from "@/components/MobileMenuToggle"
-import NavigationMenu from "@/components/NavigationMenu"
-import { ScrollProgress } from "@/components/ScrollProgress"
-import ThemeToggleButton from "@/components/ThemeToggleButton"
+import Breadcrumbs from "@/components/header/Breadcrumbs"
+import MobileMenu from "@/components/header/MobileMenu"
+import MobileMenuToggle from "@/components/header/MobileMenuToggle"
+import NavigationMenu from "@/components/header/NavigationMenu"
+import { ScrollProgress } from "@/components/header/ScrollProgress"
+import ThemeToggleButton from "@/components/header/ThemeToggleButton"
+import { useTranslation } from "@/hooks/useTranslation"
 import { cn } from "@/lib/utils"
+import LanguageToggleButton from "./LanguageToggleButton"
 
 /**
  * Header component that serves as the top navigation bar for the portfolio.
@@ -51,6 +53,10 @@ export default function Header() {
         <div className="flex items-center gap-3">
           {/* Theme toggle button */}
           <ThemeToggleButton />
+
+          {/* Lang toggle button */}
+          {/* <LangToggleButton /> */}
+          <LanguageToggleButton/>
 
           {/* Hamburger Mobile Menu toggle */}
           <MobileMenuToggle

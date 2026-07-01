@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
-import ThemeToggleButton from "@/components/ThemeToggleButton"
+import ThemeToggleButton from "@/components/header/ThemeToggleButton"
 
 // Mock next-themes to provide different theme states
 vi.mock("next-themes", async () => {

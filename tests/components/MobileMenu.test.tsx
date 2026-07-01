@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import MobileMenu from "@/components/MobileMenu"
+import MobileMenu from "@/components/header/MobileMenu"
 import { navItems } from "@/lib/constants"
 
 describe("MobileMenu", () => {

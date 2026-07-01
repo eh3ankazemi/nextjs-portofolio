@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
-import Header from "@/components/Header"
+import Header from "@/components/header/Header"
 import { homeIntroConfig } from "@/data/content"
 
 // Generate initials from a name (same logic as Breadcrumbs component)

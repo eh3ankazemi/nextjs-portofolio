@@ -3,9 +3,11 @@ import { Gabarito } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 import React, { ReactNode } from "react"
 import Footer from "@/components/Footer"
-import Header from "@/components/Header"
+import Header from "@/components/header/Header"
 import { siteMetadata } from "@/data/metadata"
 import { cn } from "@/lib/utils"
+import ClientProviders from "@/providers/ClientProviders"
+import { LanguageProvider } from "@/providers/LanguageProvider"
 
 /**
  * Import and configure the Gabarito font from Google Fonts.
@@ -47,6 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
+      dir="ltr"
       data-theme={siteMetadata.theme}
       className={`${gabarito.className} ${gabarito.variable}`}
       suppressHydrationWarning
@@ -55,21 +58,26 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={`antialiased flex flex-col min-h-screen transition-colors overscroll-none ${gabarito.className} ${gabarito.variable}`}
         suppressHydrationWarning
       >
-        <ThemeProvider attribute="class" defaultTheme="system">
-          {/* Dot Background Layer */}
-          <div
-            className={cn(
-              "fixed inset-0 -z-10",
-              "bg-[radial-gradient(circle,#d1d5db_1px,transparent_1px)]",
-              "dark:bg-[radial-gradient(circle,#3f3f46_1px,transparent_1px)]",
-              "bg-size-[30px_30px]",
-              "mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"
-            )}
-          />
-          <Header />
-          <main className="grow container mx-auto px-4 py-6">{children}</main>
-          <Footer />
-        </ThemeProvider>
+      <ThemeProvider attribute="class" defaultTheme="system">
+        <LanguageProvider>
+          <ClientProviders>
+            <div
+              className={cn(
+                "fixed inset-0 -z-10",
+                "bg-[radial-gradient(circle,#d1d5db_1px,transparent_1px)]",
+                "dark:bg-[radial-gradient(circle,#3f3f46_1px,transparent_1px)]",
+                "bg-size-[30px_30px]",
+                "mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"
+              )}
+            />
+            <Header />
+            <main className="grow container mx-auto px-4 py-6">
+              {children}
+            </main>
+            <Footer />
+          </ClientProviders>
+        </LanguageProvider>
+      </ThemeProvider>
       </body>
     </html>
   )

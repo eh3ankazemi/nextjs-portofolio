@@ -11,6 +11,7 @@ import ProjectsPreview from "@/components/home/ProjectsPreview"
 import QuickFacts from "@/components/home/QuickFacts"
 import WorkPreview from "@/components/home/WorkPreview"
 import { homeIntroConfig } from "@/data/content"
+import { useTranslation } from "@/hooks/useTranslation"
 import { BlogPostProps, ProjectProps, WorkItemProps } from "@/lib/types"
 
 interface HomeContentProps {

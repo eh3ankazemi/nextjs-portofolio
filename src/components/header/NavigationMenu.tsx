@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
-import { navItems } from "@/lib/constants"
+import { useTranslation } from "@/hooks/useTranslation"
 import { cn } from "@/lib/utils"
 
 /**
@@ -11,7 +11,18 @@ import { cn } from "@/lib/utils"
  * This component is to be used in the header of the application on desktop devices.
  */
 export default function NavigationMenu() {
+  const t = useTranslation()
   const pathname = usePathname()
+
+  
+    // Only show breadcrumbs for /blog, /projects, /work and their subpaths
+    const navItems = [
+  { name:       t.navigation.home, path: "/" },
+  { name: t.navigation.work, path: "/work" },
+  { name: t.navigation.projects, path: "/projects" },
+  { name: t.navigation.blog, path: "/blog" },
+]
+  
 
   const getActiveIndex = (p: string) =>
     navItems.findIndex(({ path }) =>
