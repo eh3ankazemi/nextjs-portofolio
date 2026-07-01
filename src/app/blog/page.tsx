@@ -1,25 +1,21 @@
 import { Metadata } from "next"
-import { redirect } from "next/navigation"
 import { Suspense } from "react"
+
+import Blogs from "@/components/blog/Blog"
 import { Loading } from "@/components/ui/loading"
-import Works from "@/components/works/Works"
-import { getAllWorkItems } from "@/lib/mdx"
+import { homeIntroConfig } from "@/data/content"
+import { getAllBlogPosts } from "@/lib/mdx"
 
 /**
- * Generate metadata for SEO, including a canonical URL that reflects the current page number.
- * Sort and filter params are excluded from the canonical to avoid duplicate-content issues.
+ * Generate metadata for SEO.
  */
-export async function generateMetadata(props: {
-  searchParams?: Promise<{ page?: string }>
-}): Promise<Metadata> {
-  const searchParams = await props.searchParams
-  const page = Number(searchParams?.page) || 1
-  const canonical = page > 1 ? `/blog?page=${page}` : "/blog"
-
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Blog | ${homeIntroConfig.name}`,
     description: "Read my latest blog posts about software development, technology, and more.",
-    alternates: { canonical },
+    alternates: {
+      canonical: "/blog",
+    },
     openGraph: {
       title: `Blog | ${homeIntroConfig.name}`,
       description: "Read my latest blog posts about software development, technology, and more.",
@@ -29,98 +25,30 @@ export async function generateMetadata(props: {
 }
 
 /**
- * BlogPage component that serves as the main page for displaying blog posts.
- * This is accessed at the "/blog" URL of the application.
+ * Blog page.
  */
-export default async function BlogPage(props: {
-  searchParams?: Promise<{
-    page?: string
-    sort?: string
-    tags?: string | string[]
-  }>
-}) {
-  // Get all blog posts from MDX files
+export default async function BlogPage() {
   const posts = await getAllBlogPosts()
 
-  // Destructure all query params at once
-  const searchParams = await props.searchParams
-
-  // Page param
-  const currentPage = Number(searchParams?.page) || 1
-  const { sort, tags } = searchParams || {}
-
-  // Sort param (default: desc)
-  const allowedSorts = ["asc", "desc"]
-  let sortOrder: "asc" | "desc" = "desc"
-  let sortIsValid: boolean
-  if (sort && allowedSorts.includes(sort as string)) {
-    sortOrder = sort as "asc" | "desc"
-    sortIsValid = true
-  } else {
-    sortOrder = "desc"
-    sortIsValid = false
-  }
-
-  // If sort is invalid, rewrite the URL
-  if (sort && !sortIsValid) {
-    const params = new URLSearchParams()
-    if (searchParams?.page) params.set("page", String(currentPage))
-    if (tags) {
-      if (Array.isArray(tags)) {
-        params.set("tags", tags.join(","))
-      } else {
-        params.set("tags", tags)
-      }
-    }
-    params.set("sort", sortOrder)
-    redirect(`/blog${params.toString() ? "?" + params.toString() : ""}`)
-  }
-
-  // Tags param (handle string or string[])
-  let selectedTags: string[] = []
-  if (tags) {
-    if (Array.isArray(tags)) {
-      selectedTags = tags.flatMap(tag => tag.split(","))
-    } else {
-      selectedTags = tags.split(",")
-    }
-  }
-
-  // Unique tags for filter dropdown
+  // Count tags
   const tagCounts: Record<string, number> = {}
+
   posts.forEach(post => {
-    ;(post.tags || []).forEach(tag => {
+    ;(post.tags ?? []).forEach(tag => {
       tagCounts[tag] = (tagCounts[tag] || 0) + 1
     })
   })
+
   const uniqueTags = Object.entries(tagCounts)
-    .map(([tag, count]) => ({ tag, count }))
+    .map(([tag, count]) => ({
+      tag,
+      count,
+    }))
     .sort((a, b) => a.tag.localeCompare(b.tag))
 
-  // Filter and sort posts
-  const filteredPosts = sortBlogPosts(filterBlogPosts(posts, selectedTags), sortOrder)
-
-  const { items: paginatedPosts, totalPages } = paginateItems(
-    filteredPosts,
-    currentPage,
-    POSTS_PAGE_SIZE
-  )
-
-  // If page is out of bounds, show not-found
-  if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
-    return <BlogNotFound />
-  }
-
   return (
-    <BlogClientUI
-      uniqueTags={uniqueTags}
-      selectedTags={selectedTags}
-      sortOrder={sortOrder}
-      filteredPosts={filteredPosts}
-      paginatedPosts={paginatedPosts}
-      currentPage={currentPage}
-      totalPages={totalPages}
-      baseUrl="/blog"
-    />
+    <Suspense fallback={<Loading />}>
+      <Blogs posts={posts} uniqueTags={uniqueTags} baseUrl="/blog" />
+    </Suspense>
   )
 }

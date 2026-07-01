@@ -1,133 +1,183 @@
-import { Metadata } from "next"
-import { redirect } from "next/navigation"
-import { Suspense } from "react"
+"use client"
+
+import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useMemo, useState } from "react"
+
+import FilterDropdown from "@/components/FilterDropdown"
+import SortDropdown from "@/components/SortDropdown"
 import { Loading } from "@/components/ui/loading"
-import { homeIntroConfig, paginationConfig } from "@/data/content"
-import { getAllProjects } from "@/lib/mdx"
+import { paginationConfig } from "@/data/content"
 import { filterProjects, paginateItems, sortProjects } from "@/lib/utils"
+
+import ActiveFilterChips from "../ActiveFilterChips"
+import PaginationControls from "../PaginationControls"
 import ProjectsClientUI from "./ProjectsClientUI"
 import ProjectsNotFound from "./ProjectsNotFound"
 
 const PROJECTS_PAGE_SIZE = paginationConfig.projectsPerPage
 
-/**
- * Generate metadata for SEO, including a canonical URL that reflects the current page number.
- * Sort and filter params are excluded from the canonical to avoid duplicate-content issues.
- */
-export async function generateMetadata(props: {
-  searchParams?: Promise<{ page?: string }>
-}): Promise<Metadata> {
-  const searchParams = await props.searchParams
-  const page = Number(searchParams?.page) || 1
-  const canonical = page > 1 ? `/projects?page=${page}` : "/projects"
-
-  return {
-    title: `Projects | ${homeIntroConfig.name}`,
-    description: "Browse my portfolio of projects, side projects, and technical work.",
-    alternates: { canonical },
-    openGraph: {
-      title: `Projects | ${homeIntroConfig.name}`,
-      description: "Browse my portfolio of projects, side projects, and technical work.",
-      type: "website",
-    },
-  }
-}
-
-/**
- * ProjectsPage component that serves as the main page for displaying projects.
- * This is accessed at the "/projects" URL of the application.
- */
-export default async function ProjectsPage(props: {
-  searchParams?: Promise<{
-    page?: string
-    sort?: string
-    tech?: string | string[]
-  }>
+export default function Projects({
+  projects,
+  uniqueTechStack,
+  baseUrl,
+}: {
+  projects: any
+  uniqueTechStack: { tech: string; count: number }[]
+  baseUrl: string
 }) {
-  // Get all projects from MDX files
-  const projects = await getAllProjects()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  // Destructure all query params at once
-  const searchParams = await props.searchParams
+  const techParam = searchParams.get("tech")
+  const sortParam = searchParams.get("sort")
+  const pageParam = searchParams.get("page")
 
-  // Page param
-  const currentPage = Number(searchParams?.page) || 1
-  const { sort, tech } = searchParams || {}
+  const currentPage = Number(pageParam) || 1
 
-  // Sort param (default: newest)
-  const allowedSorts = ["newest", "oldest"]
-  let sortOrder: "newest" | "oldest" = "newest"
-  let sortIsValid: boolean
-  if (sort && allowedSorts.includes(sort as string)) {
-    sortOrder = sort as "newest" | "oldest"
-    sortIsValid = true
-  } else {
-    sortOrder = "newest"
-    sortIsValid = false
-  }
+  const sortOrder: "newest" | "oldest" = sortParam === "oldest" ? "oldest" : "newest"
 
-  // If sort is invalid, rewrite the URL
-  if (sort && !sortIsValid) {
-    const params = new URLSearchParams()
-    if (searchParams?.page) params.set("page", String(currentPage))
-    if (tech) {
-      if (Array.isArray(tech)) {
-        params.set("tech", tech.join(","))
-      } else {
-        params.set("tech", tech)
-      }
-    }
-    params.set("sort", sortOrder)
-    redirect(`/projects${params.toString() ? "?" + params.toString() : ""}`)
-  }
+  const selectedTechStack = useMemo(() => {
+    if (!techParam) return []
 
-  // Tech param (handle string or string[])
-  let selectedTechStack: string[] = []
-  if (tech) {
-    if (Array.isArray(tech)) {
-      selectedTechStack = tech.flatMap(t => t.split(","))
-    } else {
-      selectedTechStack = tech.split(",")
-    }
-  }
+    return techParam
+      .split(",")
+      .map(t => t.trim())
+      .filter(Boolean)
+  }, [techParam])
 
-  // Unique tech stack for filter dropdown
-  const techStackCounts: Record<string, number> = {}
-  projects.forEach(project => {
-    ;(project.techStack || []).forEach(tech => {
-      techStackCounts[tech] = (techStackCounts[tech] || 0) + 1
-    })
-  })
-  const uniqueTechStack = Object.entries(techStackCounts)
-    .map(([tech, count]) => ({ tech, count }))
-    .sort((a, b) => a.tech.localeCompare(b.tech))
+  const [techDrafts, setTechDrafts] = useState(selectedTechStack)
 
-  // Filter and sort projects
-  const filteredProjects = sortProjects(filterProjects(projects, selectedTechStack), sortOrder)
+  useEffect(() => {
+    setTechDrafts(selectedTechStack)
+  }, [selectedTechStack])
 
-  const { items: paginatedProjects, totalPages } = paginateItems(
-    filteredProjects,
-    currentPage,
-    PROJECTS_PAGE_SIZE
+  const filteredProjects = useMemo(() => {
+    return sortProjects(filterProjects(projects, selectedTechStack), sortOrder)
+  }, [projects, selectedTechStack, sortOrder])
+
+  const { items: paginatedProjects, totalPages } = useMemo(
+    () => paginateItems(filteredProjects, currentPage, PROJECTS_PAGE_SIZE),
+    [filteredProjects, currentPage]
   )
 
-  // If page is out of bounds, show not-found
   if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
     return <ProjectsNotFound />
   }
 
+  const handleToggleTech = (tech: string) => {
+    setTechDrafts(prev => (prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]))
+  }
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (techDrafts.length) {
+      params.set("tech", techDrafts.join(","))
+    } else {
+      params.delete("tech")
+    }
+
+    params.delete("page")
+
+    router.replace(`${baseUrl}${params.toString() ? `?${params.toString()}` : ""}`, {
+      scroll: false,
+    })
+  }
+
+  const handleClearFilters = () => {
+    setTechDrafts([])
+
+    const params = new URLSearchParams(searchParams.toString())
+
+    params.delete("tech")
+    params.delete("page")
+
+    router.replace(`${baseUrl}${params.toString() ? `?${params.toString()}` : ""}`, {
+      scroll: false,
+    })
+  }
+
+  const handleSortChange = (order: "newest" | "oldest" | "asc" | "desc") => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    params.set("sort", order)
+    params.delete("page")
+
+    router.replace(`${baseUrl}${params.toString() ? `?${params.toString()}` : ""}`, {
+      scroll: false,
+    })
+  }
+
+  const handleRemoveTech = (tech: string) => {
+    const updated = techDrafts.filter(t => t !== tech)
+
+    setTechDrafts(updated)
+
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (updated.length) {
+      params.set("tech", updated.join(","))
+    } else {
+      params.delete("tech")
+    }
+
+    params.delete("page")
+
+    router.replace(`${baseUrl}${params.toString() ? `?${params.toString()}` : ""}`, {
+      scroll: false,
+    })
+  }
+
   return (
-    <Suspense fallback={<Loading />}>
-      <ProjectsClientUI
-        uniqueTechStack={uniqueTechStack}
-        selectedTechStack={selectedTechStack}
-        sortOrder={sortOrder}
-        filteredProjects={filteredProjects}
-        paginatedProjects={paginatedProjects}
+    <section className="mx-auto max-w-4xl px-4">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <Suspense fallback={<Loading />}>
+          <FilterDropdown
+            items={uniqueTechStack.map(({ tech, count }) => ({
+              name: tech,
+              count,
+            }))}
+            selectedItems={techDrafts}
+            onToggle={handleToggleTech}
+            onApply={handleApplyFilters}
+            onClear={handleClearFilters}
+            placeholder="Filter by Tech"
+            resultCount={filteredProjects.length}
+          />
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <SortDropdown
+            sortOrder={sortOrder}
+            onChange={handleSortChange}
+            options={[
+              {
+                label: "Newest First",
+                value: "newest",
+              },
+              {
+                label: "Oldest First",
+                value: "oldest",
+              },
+            ]}
+          />
+        </Suspense>
+      </div>
+
+      <ActiveFilterChips
+        filters={selectedTechStack}
+        onRemove={handleRemoveTech}
+        onClearAll={selectedTechStack.length > 1 ? handleClearFilters : undefined}
+      />
+
+      <ProjectsClientUI filteredProjects={filteredProjects} paginatedProjects={paginatedProjects} />
+
+      <PaginationControls
         currentPage={currentPage}
         totalPages={totalPages}
-        baseUrl="/projects"
+        baseUrl={baseUrl}
+        searchParams={Object.fromEntries(searchParams.entries())}
       />
-    </Suspense>
+    </section>
   )
 }

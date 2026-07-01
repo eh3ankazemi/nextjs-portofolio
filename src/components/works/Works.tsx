@@ -63,9 +63,9 @@ export default function Works({
     WORK_PAGE_SIZE
   )
 
-  // if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
+  if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
     return <WorkNotFound />
-  // }
+  }
 
   const handleToggleCompany = (company: string) => {
     setCompanyDrafts(prev =>
