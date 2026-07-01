@@ -1,5 +1,5 @@
 import "./globals.css"
-import { Gabarito } from "next/font/google"
+import { Gabarito,Vazirmatn } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 import React, { ReactNode } from "react"
 import Footer from "@/components/Footer"
@@ -16,6 +16,11 @@ import { LanguageProvider } from "@/providers/LanguageProvider"
 const gabarito = Gabarito({
   variable: "--font-gabarito",
   subsets: ["latin"],
+})
+
+const  vazirmatn =  Vazirmatn({
+  variable: "--font-vazirmatn",
+  subsets: ["Vazirmatn"],
 })
 
 /**
@@ -51,11 +56,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       dir="ltr"
       data-theme={siteMetadata.theme}
-      className={`${gabarito.className} ${gabarito.variable}`}
       suppressHydrationWarning
     >
       <body
-        className={`antialiased flex flex-col min-h-screen transition-colors overscroll-none ${gabarito.className} ${gabarito.variable}`}
+        className={`antialiased flex flex-col min-h-screen transition-colors overscroll-none ${gabarito.className} ${gabarito.variable}  ${vazirmatn.className} ${vazirmatn.variable}`}
         suppressHydrationWarning
       >
       <ThemeProvider attribute="class" defaultTheme="system">
