@@ -3,7 +3,6 @@
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useMemo, useState } from "react"
 
-import WorkNotFound from "@/app/work/WorkNotFound"
 import FilterDropdown from "@/components/FilterDropdown"
 import SortDropdown from "@/components/SortDropdown"
 import { Loading } from "@/components/ui/loading"
@@ -12,6 +11,7 @@ import { filterWorkItems, paginateItems, sortWorkItems } from "@/lib/utils"
 import ActiveFilterChips from "../ActiveFilterChips"
 import PaginationControls from "../PaginationControls"
 import WorkClientUI from "./WorkClientUI"
+import WorkNotFound from "./WorkNotFound"
 
 const WORK_PAGE_SIZE = paginationConfig.projectsPerPage
 
@@ -63,9 +63,9 @@ export default function Works({
     WORK_PAGE_SIZE
   )
 
-  if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
+  // if (currentPage < 1 || (totalPages > 0 && currentPage > totalPages)) {
     return <WorkNotFound />
-  }
+  // }
 
   const handleToggleCompany = (company: string) => {
     setCompanyDrafts(prev =>
